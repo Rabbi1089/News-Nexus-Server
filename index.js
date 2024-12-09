@@ -42,6 +42,13 @@ async function run() {
       res.send(result)
     })
 
+        //user related api
+        app.get("/article", async (req, res) => {
+          const result = await articleCollections.find().toArray();
+          res.send(result);
+          console.log(result);
+        });
+
   } finally {
     // Ensures that the client will close when you finish/error
     //await client.close();
