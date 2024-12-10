@@ -32,6 +32,7 @@ async function run() {
     );
 
     const articleCollections = client.db("nexusDb").collection("article");
+    const userCollections = client.db("nexusDb").collection("user");
 
 //article related api 
     app.post('/article', async (req, res) => {
@@ -48,6 +49,25 @@ async function run() {
           res.send(result);
           console.log(result);
         });
+
+
+      //user related api
+
+      app.post("/user", async (req, res) => {
+        const user = req.body;
+        console.log(user);
+        const query = { email: user.email };
+        const isExists = await userCollections.findOne(query);
+        if (isExists) {
+          return res.send({
+            message: "user already exists",
+            insertId: null,
+          });
+        }
+        const result = await userCollections.insertOne(user);
+        
+        res.send(result);
+      });
 
   } finally {
     // Ensures that the client will close when you finish/error
