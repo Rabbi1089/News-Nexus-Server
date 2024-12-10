@@ -34,6 +34,32 @@ async function run() {
     const articleCollections = client.db("nexusDb").collection("article");
     const userCollections = client.db("nexusDb").collection("user");
 
+        //jwt
+        app.post("/jwt", async (req, res) => {
+          const user = req.body;
+          const token = jwt.sign(user, process.env.token_secret, {
+            expiresIn: "1h",
+          });
+          res.send({ token });
+        });
+    
+        //middleware
+        const verifyToken = (req, res, next) => {
+          if (!req.headers.authorization) {
+            return res.status(401).send({ message: "Unauthorized  access" });
+          }
+          const token = req.headers.authorization.split(" ")[1];
+          // verify a token 
+          jwt.verify(token, process.env.token_secret, (err, decoded) => {
+            if (err) {
+              return res.status(401).send({ message: "Unauthorized access" });
+            }
+            req.decoded = decoded;
+            next();
+          });
+        };
+    
+
 //article related api 
     app.post('/article', async (req, res) => {
       const item = req.body;
@@ -44,7 +70,7 @@ async function run() {
     })
 
         //user related api
-        app.get("/article", async (req, res) => {
+        app.get("/article",verifyToken, async (req, res) => {
           const result = await articleCollections.find().toArray();
           res.send(result);
           console.log(result);
@@ -65,9 +91,15 @@ async function run() {
           });
         }
         const result = await userCollections.insertOne(user);
-        
+
         res.send(result);
       });
+
+      app.get("/user",  async (req, res) => {
+        const result = await userCollections.find().toArray();
+        res.send(result);
+      });
+  
 
   } finally {
     // Ensures that the client will close when you finish/error
