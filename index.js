@@ -99,6 +99,31 @@ async function run() {
         const result = await userCollections.find().toArray();
         res.send(result);
       });
+
+      app.patch("/user/admin/:id", verifyToken, async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $set: {
+            role: "admin",
+          },
+        };
+        const result = await userCollections.updateOne(query, updateDoc);
+
+        console.log(result);
+        res.send(result);
+      });
+
+      const verifyAdmin = async (req, res, next) => {
+        const email = req.decoded.email;
+        const query = { email: email };
+        const user = await userCollections.findOne(query);
+        const isAdmin = user?.role === "admin";
+        if (!isAdmin) {
+          return res.status(403).send({ message: "forbidden access" });
+        }
+        next();
+      };
   
 
   } finally {
