@@ -122,7 +122,21 @@ async function run() {
       });
 
 
-
+      app.get("/users/admin/:email",verifyToken, async (req, res) => {
+        const email = req.params.email;
+        console.log(email);
+        if (email !== req.decoded.email) {
+          return res.send.status(403).send({ message: "forbidden access" });
+        }
+  
+        const query = { email: email };
+        const user = await userCollections.findOne(query);
+        let admin = false;
+        if (user) {
+          admin = user?.role === "admin";
+        }
+        res.send({ admin });
+      });
 
       const verifyAdmin = async (req, res, next) => {
         const email = req.decoded.email;
@@ -146,6 +160,28 @@ async function run() {
           },
         };
         const result = await articleCollections.updateOne(query, updateDoc);
+        console.log(result);
+        res.send(result);
+      });
+
+      app.patch("/admin/premium/:id", verifyToken,verifyAdmin, async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $set: {
+            premium: true,
+          },
+        };
+        const result = await articleCollections.updateOne(query, updateDoc);
+        console.log(result);
+        res.send(result);
+      });
+
+
+      app.delete("/admin/article/:id", verifyToken,verifyAdmin, async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await articleCollections.deleteOne(query);
         console.log(result);
         res.send(result);
       });
