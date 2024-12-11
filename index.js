@@ -6,7 +6,14 @@ const app = express();
 const port = process.env.port || 5000;
 const jwt = require("jsonwebtoken");
 
-app.use(cors());
+// middleware
+const corsOptions = {
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  credentials: true,
+  optionSuccessStatus: 200,
+}
+app.use(cors(corsOptions))
+
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_User}:${process.env.DB_Pass}@cluster0.t241ufd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -65,15 +72,15 @@ async function run() {
       const item = req.body;
       console.log(item);
       const result = await articleCollections.insertOne(item)
-      console.log(result);
+     // console.log(result);
       res.send(result)
     })
 
         //user related api
-        app.get("/article",verifyToken, async (req, res) => {
+        app.get("/article", async (req, res) => {
           const result = await articleCollections.find().toArray();
           res.send(result);
-          console.log(result);
+          //console.log(result);
         });
 
 
@@ -110,9 +117,12 @@ async function run() {
         };
         const result = await userCollections.updateOne(query, updateDoc);
 
-        console.log(result);
+       // console.log(result);
         res.send(result);
       });
+
+
+
 
       const verifyAdmin = async (req, res, next) => {
         const email = req.decoded.email;
@@ -124,6 +134,22 @@ async function run() {
         }
         next();
       };
+
+
+      app.patch("/admin/article/:id", verifyToken,verifyAdmin, async (req, res) => {
+        const id = req.params.id;
+        const status = req.body.status;
+        const query = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $set: {
+            status: status,
+          },
+        };
+        const result = await articleCollections.updateOne(query, updateDoc);
+        console.log(result);
+        res.send(result);
+      });
+
   
 
   } finally {
