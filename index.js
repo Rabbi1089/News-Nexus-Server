@@ -40,6 +40,7 @@ async function run() {
 
     const articleCollections = client.db("nexusDb").collection("article");
     const userCollections = client.db("nexusDb").collection("user");
+    const publisherCollections = client.db("nexusDb").collection("publisher");
 
         //jwt
         app.post("/jwt", async (req, res) => {
@@ -70,9 +71,7 @@ async function run() {
 //article related api 
     app.post('/article', async (req, res) => {
       const item = req.body;
-      console.log(item);
       const result = await articleCollections.insertOne(item)
-     // console.log(result);
       res.send(result)
     })
 
@@ -80,7 +79,6 @@ async function run() {
         app.get("/article", async (req, res) => {
           const result = await articleCollections.find().toArray();
           res.send(result);
-          //console.log(result);
         });
 
 
@@ -88,7 +86,6 @@ async function run() {
 
       app.post("/user", async (req, res) => {
         const user = req.body;
-        console.log(user);
         const query = { email: user.email };
         const isExists = await userCollections.findOne(query);
         if (isExists) {
@@ -116,15 +113,12 @@ async function run() {
           },
         };
         const result = await userCollections.updateOne(query, updateDoc);
-
-       // console.log(result);
         res.send(result);
       });
 
 
       app.get("/users/admin/:email",verifyToken, async (req, res) => {
         const email = req.params.email;
-        console.log(email);
         if (email !== req.decoded.email) {
           return res.send.status(403).send({ message: "forbidden access" });
         }
@@ -153,14 +147,15 @@ async function run() {
       app.patch("/admin/article/:id", verifyToken,verifyAdmin, async (req, res) => {
         const id = req.params.id;
         const status = req.body.status;
+        const declineMessage = req.body.declineMessage;
         const query = { _id: new ObjectId(id) };
         const updateDoc = {
           $set: {
             status: status,
+            declineMessage :declineMessage
           },
         };
-        const result = await articleCollections.updateOne(query, updateDoc);
-        console.log(result);
+        const result = await articleCollections.updateOne(query, updateDoc)
         res.send(result);
       });
 
@@ -173,7 +168,7 @@ async function run() {
           },
         };
         const result = await articleCollections.updateOne(query, updateDoc);
-        console.log(result);
+
         res.send(result);
       });
 
@@ -182,9 +177,18 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await articleCollections.deleteOne(query);
-        console.log(result);
+
         res.send(result);
       });
+
+      //publiser related api 
+    app.post('/publisher', async (req, res) => {
+      const item = req.body;
+      const result = await publisherCollections.insertOne(item)
+      res.send(result)
+      console.log(result);
+    })
+
 
   
 
