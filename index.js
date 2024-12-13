@@ -1,20 +1,26 @@
 const express = require("express");
+const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
-const cors = require("cors");
 const app = express();
-const port = process.env.port || 5000;
+const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const port = process.env.PORT || 5000;
 
-// middleware
+//middleware
 const corsOptions = {
-  origin: ["https://news-nexus-25.netlify.app/,  http://localhost:5173", "http://localhost:5174"],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://news-nexus-25.netlify.app/',
+  ],
   credentials: true,
   optionSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+}
 
+app.use(cors(corsOptions))
 app.use(express.json());
+app.use(cookieParser());
 
 const uri = `mongodb+srv://${process.env.DB_User}:${process.env.DB_Pass}@cluster0.t241ufd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -102,7 +108,7 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await articleCollections.findOne(query);
       res.send(result);
-
+      console.log(result);
     });
 
 
