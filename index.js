@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express')
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
@@ -92,6 +92,7 @@ async function run() {
         status: "approve",
       };
       const result = await articleCollections.find(query).toArray();
+      console.log(result);
       res.send(result);
     });
 
@@ -101,6 +102,7 @@ async function run() {
       };
       const result = await articleCollections.find(query).toArray();
       res.send(result);
+      console.log(result);
     });
 
     app.get("/article/:id", verifyToken, async (req, res) => {
