@@ -13,6 +13,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:5174",
     "https://news-nexus-25.netlify.app/",
+    "https://nexus-news-7e6c7.web.app/"
   ],
   credentials: true,
   optionSuccessStatus: 200,
