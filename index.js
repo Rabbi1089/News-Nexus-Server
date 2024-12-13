@@ -8,38 +8,17 @@ const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
 
 //middleware
-/*
 const corsOptions = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://news-nexus-25.netlify.app/",
-    "https://nexus-news-7e6c7.web.app/"
+    "https://news-nexus-25.netlify.app",
+    "https://nexus-news-7e6c7.web.app",
   ],
   credentials: true,
   optionSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions));
-
-*/
-const corsOptions = {
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://news-nexus-25.netlify.app",
-      "https://nexus-news-7e6c7.web.app"
-    ];
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  optionSuccessStatus: 200,
-};
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
