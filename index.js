@@ -7,30 +7,18 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
 
-<<<<<<< HEAD
 //middleware
 const corsOptions = {
   origin: [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://news-nexus-25.netlify.app/',
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://news-nexus-25.netlify.app/",
   ],
   credentials: true,
   optionSuccessStatus: 200,
-}
-=======
-// middleware
-app.use(cors({
-  origin: "https://news-nexus-25.netlify.app/"
-     credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionSuccessStatus: 200
-}));
+};
 
->>>>>>> 2ce9f728d213b7fdec239b408766769afbd62b96
-
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -114,7 +102,6 @@ async function run() {
       res.send(result);
     });
 
-
     app.get("/article/:id", verifyToken, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -122,7 +109,6 @@ async function run() {
       res.send(result);
       console.log(result);
     });
-
 
     app.post("/user", async (req, res) => {
       const user = req.body;
@@ -238,7 +224,6 @@ async function run() {
       const item = req.body;
       const result = await publisherCollections.insertOne(item);
       res.send(result);
-     
     });
     app.get("/publisher", async (req, res) => {
       const result = await publisherCollections.find().toArray();
