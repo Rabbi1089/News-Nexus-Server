@@ -1,59 +1,28 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-require("dotenv").config();
-const app = express();
-const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-const port = process.env.PORT || 5000;
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
-//middleware
-/*
+const port = process.env.PORT || 5000;
+const app = express();
+
 const corsOptions = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://news-nexus-25.netlify.app/",
-    "https://nexus-news-7e6c7.web.app/"
+    "https://nexus-news-7e6c7.web.app/",
   ],
-  credentials: true,
+  credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
 
+// middleware
 app.use(cors(corsOptions));
-
-*/
-const corsOptions = {
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://news-nexus-25.netlify.app",
-      "https://nexus-news-7e6c7.web.app"
-    ];
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  optionSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
-
-
-app.options('*', cors(corsOptions));
-
 app.use(express.json());
 app.use(cookieParser());
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  next();
-});
 
 const uri = `mongodb+srv://${process.env.DB_User}:${process.env.DB_Pass}@cluster0.t241ufd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
