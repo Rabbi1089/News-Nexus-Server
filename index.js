@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
 
+<<<<<<< HEAD
 //middleware
 const corsOptions = {
   origin: [
@@ -17,6 +18,17 @@ const corsOptions = {
   credentials: true,
   optionSuccessStatus: 200,
 }
+=======
+// middleware
+app.use(cors({
+  origin: "https://news-nexus-25.netlify.app/"
+     credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionSuccessStatus: 200
+}));
+
+>>>>>>> 2ce9f728d213b7fdec239b408766769afbd62b96
 
 app.use(cors(corsOptions))
 app.use(express.json());
